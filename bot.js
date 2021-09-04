@@ -34,7 +34,7 @@ class DentaBot extends ActivityHandler {
                      
             // determine which service to respond with based on the results from LUIS
             if (LuisResult.luisResult.prediction.topIntent == 'GetAvailability' &&
-                LuisResult.intents.GetAvailability.score > 0.5 &&
+                LuisResult.intents.GetAvailability.score > 0.75 &&
                 LuisResult.entities.$instance){
                     const availableTime = await this.dentistScheduler.getAvailability();
                     await context.sendActivity(availableTime);
@@ -43,7 +43,7 @@ class DentaBot extends ActivityHandler {
             }
 
             if (LuisResult.luisResult.prediction.topIntent == 'ScheduleAppointment' &&
-                LuisResult.intents.ScheduleAppointment.score > 0.5 &&
+                LuisResult.intents.ScheduleAppointment.score > 0.75 &&
                 LuisResult.entities.$instance && 
                 LuisResult.entities.$instance.datetime &&
                 LuisResult.entities.$instance.datetime[0]){
