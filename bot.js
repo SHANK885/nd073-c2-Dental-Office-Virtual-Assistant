@@ -14,37 +14,62 @@ class DentaBot extends ActivityHandler {
         if (!configuration) throw new Error('[QnaMakerBot]: Missing parameter. configuration is required');
 
         // create a QnAMaker connector
-        this.QnAMaker = new QnAMaker(configuration.QnAConfiguration, qnaOptions)
+        this.qnAMaker = new QnAMaker(configuration.QnAConfiguration, qnaOptions)
        
         // create a DentistScheduler connector
+        this.dentistScheduler = new DentistScheduler(configuration.SchedulerConfiguration);
       
         // create a IntentRecognizer connector
+        this.intentRecognier = new IntentRecognizer(configuration.LuisConfiguration);
 
 
         this.onMessage(async (context, next) => {
             // send user input to QnA Maker and collect the response in a variable
             // don't forget to use the 'await' keyword
+            const qnaResults = await this.qnaMaker.getAnswers(context);
           
             // send user input to IntentRecognizer and collect the response in a variable
             // don't forget 'await'
+            const LuisResult = await this.intentRecognier.executeLuisQuery(context);
                      
-            // determine which service to respond with based on the results from LUIS //
+            // determine which service to respond with based on the results from LUIS
+            if (LuisResult.luisResult.prediction.topIntent == 'getAvailability' &&
+                LuisResult.intents.getAvailability.score > 0.5 &&
+                LuisResult.entities.$instance){
+                    const availableTime = await this.dentistScheduler.getAvailability();
+                    await context.sendActivity(availableTime);
+                    next();
+                    return;
+            }
 
-            // if(top intent is intentA and confidence greater than 50){
-            //  doSomething();
-            //  await context.sendActivity();
-            //  await next();
-            //  return;
-            // }
-            // else {...}
-             
+            if (LuisResult.luisResult.prediction.topIntent == 'scheduleAppointment' &&
+                LuisResult.intents.scheduleAppointment.score > 0.5 &&
+                LuisResult.entities.$instance && 
+                LuisResult.entities.$instance.time &&
+                LuisResult.entities.$instance.time[0]){
+                    const time = LuisResult.entities.$instance.time[0].text;
+                    const schedulerResponse = await this.dentistScheduler.scheduleAppointment(time);
+                    await context.sendActivity(schedulerResponse);
+                    next();
+                    return;
+            }
+
+            if(qnaResults[0]){
+                console.log(qnaResults[0])
+                await context.sendActivity(`${qnaResults[0].answer}`);
+            }
+
+            else{
+                await context.sendActivity(`Sorry, I did not find an answer to your question.`);
+            }
+     
             await next();
     });
 
         this.onMembersAdded(async (context, next) => {
         const membersAdded = context.activity.membersAdded;
         //write a custom greeting
-        const welcomeText = '';
+        const welcomeText = 'Hello, I am dova. A virtual assistant for dental office';
         for (let cnt = 0; cnt < membersAdded.length; ++cnt) {
             if (membersAdded[cnt].id !== context.activity.recipient.id) {
                 await context.sendActivity(MessageFactory.text(welcomeText, welcomeText));
