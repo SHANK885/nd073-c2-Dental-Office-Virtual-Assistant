@@ -1,34 +1,75 @@
-# README Template
+# DOVA: Dental Office Virtual Assistant
 
-Below is a template provided for use when building your README file for students.
-
-# Project Title
-
-Project description goes here.
+Dental Office Virtual Assistant
 
 ## Getting Started
 
-Instructions for how to get a copy of the project running on your local machine.
+The repository contains all the work related to the "Dental office virtal assistant" project from the Azure AI Engineer Nanodegree. The respository contains multiple branches to make the separate CI/CD deployment of each of the part as listed below. The required workflow yml files for each part is present in the respective branch of the repository.
 
-### Dependencies
+* [ContosoDentistryChatBot](https://github.com/SHANK885/nd073-c2-Dental-Office-Virtual-Assistant/tree/ContosoDentistryChatBot)
+* [ContosoDentistryScheduler](https://github.com/SHANK885/nd073-c2-Dental-Office-Virtual-Assistant/tree/ContosoDentistryScheduler)
+* [ContosoDentistryWebsite](https://github.com/SHANK885/nd073-c2-Dental-Office-Virtual-Assistant/tree/ContosoDentistryWebsite)
+
+## Website
+
+Plase visit the below link to test the virtual assitant and interact with it.
+
+[Dental Office Virtual Assistant](https://jolly-tree-02dc31910.azurestaticapps.net)
+
+
+## Dependencies
 
 ```
 Examples here
 ```
 
-### Installation
+## Installation
 
 Step by step explanation of how to get a dev environment running.
 
-List out the steps
 
 ```
-Give an example here
+npm install
 ```
 
 ## Testing
 
-Explain the steps needed to run any automated tests
+For testing the bot locally.
+
+1. Download the Microsoft Bot Framework Emulator
+2. Run the below command
+
+    ```
+    npm start
+    ```
+3. Open the Bot Framework Emulator and load the bot using the below provided URL.
+    ```
+    http://localhost:3978/api/messages
+    ```
+
+## Test Results
+
+### 1. Bot Code
+![Bot Code](./screenshots/bot_code.png)
+
+### 2. Knowledge Base
+![QnA KB](./screenshots/knowledge_base.png)
+
+### 3. LUIS App
+![LUIS](./screenshots/luis_app.png)
+
+### 4. Github CI/CD
+![CI/CD](./screenshots/github_ci_cd.png)
+
+### 5. Portal Bot Test
+![Portal Test](./screenshots/portal_bot_test.png)
+
+### 6. Website Bot Test
+![Web Test](./screenshots/website_bot_test.png)
+
+### 7. Local Bot test
+![Local Test](./screenshots/local_bot_test.png)
+
 
 ### Break Down Tests
 
