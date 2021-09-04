@@ -45,9 +45,9 @@ class DentaBot extends ActivityHandler {
             if (LuisResult.luisResult.prediction.topIntent == 'ScheduleAppointment' &&
                 LuisResult.intents.ScheduleAppointment.score > 0.5 &&
                 LuisResult.entities.$instance && 
-                LuisResult.entities.$instance.time &&
-                LuisResult.entities.$instance.time[0]){
-                    const time = LuisResult.entities.$instance.time[0].text;
+                LuisResult.entities.$instance.datetime &&
+                LuisResult.entities.$instance.datetime[0]){
+                    const time = LuisResult.entities.$instance.datetime[0].text;
                     const schedulerResponse = await this.dentistScheduler.scheduleAppointment(time);
                     await context.sendActivity(schedulerResponse);
                     next();
