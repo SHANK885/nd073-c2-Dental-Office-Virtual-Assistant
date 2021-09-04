@@ -14,13 +14,13 @@ class DentaBot extends ActivityHandler {
         if (!configuration) throw new Error('[QnaMakerBot]: Missing parameter. configuration is required');
 
         // create a QnAMaker connector
-        this.qnAMaker = new QnAMaker(configuration.QnAConfiguration, qnaOptions)
+        this.qnaMaker = new QnAMaker(configuration.QnAConfiguration, qnaOptions)
        
         // create a DentistScheduler connector
         this.dentistScheduler = new DentistScheduler(configuration.SchedulerConfiguration);
       
         // create a IntentRecognizer connector
-        this.intentRecognier = new IntentRecognizer(configuration.LuisConfiguration);
+        this.intentRecogniser = new IntentRecognizer(configuration.LuisConfiguration);
 
 
         this.onMessage(async (context, next) => {
@@ -30,11 +30,11 @@ class DentaBot extends ActivityHandler {
           
             // send user input to IntentRecognizer and collect the response in a variable
             // don't forget 'await'
-            const LuisResult = await this.intentRecognier.executeLuisQuery(context);
+            const LuisResult = await this.intentRecogniser.executeLuisQuery(context);
                      
             // determine which service to respond with based on the results from LUIS
-            if (LuisResult.luisResult.prediction.topIntent == 'getAvailability' &&
-                LuisResult.intents.getAvailability.score > 0.5 &&
+            if (LuisResult.luisResult.prediction.topIntent == 'GetAvailability' &&
+                LuisResult.intents.GetAvailability.score > 0.5 &&
                 LuisResult.entities.$instance){
                     const availableTime = await this.dentistScheduler.getAvailability();
                     await context.sendActivity(availableTime);
@@ -42,8 +42,8 @@ class DentaBot extends ActivityHandler {
                     return;
             }
 
-            if (LuisResult.luisResult.prediction.topIntent == 'scheduleAppointment' &&
-                LuisResult.intents.scheduleAppointment.score > 0.5 &&
+            if (LuisResult.luisResult.prediction.topIntent == 'ScheduleAppointment' &&
+                LuisResult.intents.ScheduleAppointment.score > 0.5 &&
                 LuisResult.entities.$instance && 
                 LuisResult.entities.$instance.time &&
                 LuisResult.entities.$instance.time[0]){
